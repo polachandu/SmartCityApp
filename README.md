@@ -19,7 +19,7 @@
 [![Stars](https://img.shields.io/github/stars/Rajath2005/SmartCityApp?style=for-the-badge&color=yellow)](https://github.com/Rajath2005/SmartCityApp/stargazers)
 [![Forks](https://img.shields.io/github/forks/Rajath2005/SmartCityApp?style=for-the-badge&color=blue)](https://github.com/Rajath2005/SmartCityApp/network/members)
 [![Issues](https://img.shields.io/github/issues/Rajath2005/SmartCityApp?style=for-the-badge&color=red)](https://github.com/Rajath2005/SmartCityApp/issues)
-
+[![Open Source Helpers](https://www.codetriage.com/rajath2005/smartcityapp/badges/users.svg)](https://www.codetriage.com/rajath2005/smartcityapp)
 <br/>
 
 [🚀 Get Started](#-getting-started) &nbsp;|&nbsp;
