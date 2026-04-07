@@ -543,14 +543,26 @@ public class SmartCityApp {
         // Get place name
         System.out.print("Enter place name: ");
         String name = scanner.nextLine();
+		if (!isValidPlaceName(name)) {
+			System.out.println("❌ Error: Place name cannot be empty.");
+			return;
+		}
 
         // Get place category
         System.out.print("Enter category (e.g., Hotel, Restaurant, Park): ");
         String category = scanner.nextLine();
+		if (category == null || category.trim().isEmpty()) {
+			System.out.println("❌ Error: Category cannot be empty.");
+			return;
+		}
 
         // Get place location
         System.out.print("Enter location: ");
         String location = scanner.nextLine();
+		if (!isValidLocation(location)) {
+			System.out.println("❌ Error: Location cannot be empty.");
+			return;
+		}
 
         // Get place description
         System.out.print("Enter description: ");
@@ -597,101 +609,107 @@ public class SmartCityApp {
 
     // Update an existing place in the city
     private static void updatePlace() {
-        System.out.println("\n--- Update Place ---");
+		System.out.println("\n--- Update Place ---");
 
-        // Ask admin for place ID to update
-        System.out.print("Enter place ID to update: ");
-        int placeId = scanner.nextInt();
-        scanner.nextLine(); // Clear newline from input buffer
+		System.out.print("Enter place ID to update: ");
+		int placeId = scanner.nextInt();
+		scanner.nextLine();
 
-        // SQL query to fetch place by ID
-        String selectQuery = "SELECT * FROM places WHERE id = ?";
-        // SQL query to update place details
-        String updateQuery = "UPDATE places SET name = ?, category = ?, location = ?, description = ? WHERE id = ?";
+		String selectQuery = "SELECT * FROM places WHERE id = ?";
+		String updateQuery = "UPDATE places SET name = ?, category = ?, location = ?, description = ? WHERE id = ?";
 
-        try {
-            // Get database connection
-            Connection connection = DBConnection.getConnection();
+		try {
+			Connection connection = DBConnection.getConnection();
 
-            if (connection == null) {
-                System.out.println("❌ Failed to connect to database.");
-                return;
-            }
+			if (connection == null) {
+				System.out.println("❌ Failed to connect to database.");
+				return;
+			}
 
-            // Check if place exists
-            PreparedStatement selectPstmt = connection.prepareStatement(selectQuery);
-            selectPstmt.setInt(1, placeId);
-            ResultSet resultSet = selectPstmt.executeQuery();
+			// Fetch existing place
+			PreparedStatement selectPstmt = connection.prepareStatement(selectQuery);
+			selectPstmt.setInt(1, placeId);
+			ResultSet rs = selectPstmt.executeQuery();
 
-            // If place not found, show error and return
-            if (!resultSet.next()) {
-                System.out.println("❌ Error: Place with ID " + placeId + " not found.");
-                return;
-            }
+			if (!rs.next()) {
+				System.out.println("❌ Error: Place with ID " + placeId + " not found.");
+				return;
+			}
 
-            // Display current place details
-            System.out.println("\nCurrent details:");
-            System.out.println("Name: " + resultSet.getString("name"));
-            System.out.println("Category: " + resultSet.getString("category"));
-            System.out.println("Location: " + resultSet.getString("location"));
-            System.out.println("Description: " + resultSet.getString("description"));
+			// Existing values
+			String currentName = rs.getString("name");
+			String currentCategory = rs.getString("category");
+			String currentLocation = rs.getString("location");
+			String currentDescription = rs.getString("description");
 
-            // Get new place name
-            System.out.print("\nEnter new name (or press Enter to keep current): ");
-            String newName = scanner.nextLine();
-            if (!newName.isEmpty()) {
-                // Update name in database
-                PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
-                updatePstmt.setString(1, newName);
-                updatePstmt.setInt(5, placeId);
-                updatePstmt.executeUpdate();
-            }
+			System.out.println("\nCurrent details:");
+			System.out.println("Name: " + currentName);
+			System.out.println("Category: " + currentCategory);
+			System.out.println("Location: " + currentLocation);
+			System.out.println("Description: " + currentDescription);
 
-            // Get new category
-            System.out.print("Enter new category (or press Enter to keep current): ");
-            String newCategory = scanner.nextLine();
-            if (!newCategory.isEmpty()) {
-                // Update category in database
-                PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
-                updatePstmt.setString(2, newCategory);
-                updatePstmt.setInt(5, placeId);
-                updatePstmt.executeUpdate();
-            }
+			// Take new inputs
+			System.out.print("\nEnter new name (or press Enter to keep current): ");
+			String newName = scanner.nextLine();
 
-            // Get new location
-            System.out.print("Enter new location (or press Enter to keep current): ");
-            String newLocation = scanner.nextLine();
-            if (!newLocation.isEmpty()) {
-                // Update location in database
-                PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
-                updatePstmt.setString(3, newLocation);
-                updatePstmt.setInt(5, placeId);
-                updatePstmt.executeUpdate();
-            }
+			System.out.print("Enter new category (or press Enter to keep current): ");
+			String newCategory = scanner.nextLine();
 
-            // Get new description
-            System.out.print("Enter new description (or press Enter to keep current): ");
-            String newDescription = scanner.nextLine();
-            if (!newDescription.isEmpty()) {
-                // Update description in database
-                PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
-                updatePstmt.setString(4, newDescription);
-                updatePstmt.setInt(5, placeId);
-                updatePstmt.executeUpdate();
-            }
+			System.out.print("Enter new location (or press Enter to keep current): ");
+			String newLocation = scanner.nextLine();
 
-            System.out.println("✅ Success! Place with ID " + placeId + " has been updated.");
+			System.out.print("Enter new description (or press Enter to keep current): ");
+			String newDescription = scanner.nextLine();
 
-            // Close resources
-            resultSet.close();
-            selectPstmt.close();
-            connection.close();
+			// Use old values if input is empty
+			if (newName.isEmpty()) newName = currentName;
+			if (newCategory.isEmpty()) newCategory = currentCategory;
+			if (newLocation.isEmpty()) newLocation = currentLocation;
+			if (newDescription.isEmpty()) newDescription = currentDescription;
 
-        } catch (SQLException e) {
-            System.out.println("❌ Error: Failed to update place in database.");
-            System.out.println("   Error message: " + e.getMessage());
-        }
-    }
+			// 🔥 VALIDATION
+			if (newName == null || newName.trim().isEmpty()) {
+				System.out.println("❌ Error: Place name cannot be empty.");
+				return;
+			}
+
+			if (newLocation == null || newLocation.trim().isEmpty()) {
+				System.out.println("❌ Error: Location cannot be empty.");
+				return;
+			}
+
+			if (newCategory == null || newCategory.trim().isEmpty()) {
+				System.out.println("❌ Error: Category cannot be empty.");
+				return;
+			}
+
+			// Single correct update query
+			PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
+			updatePstmt.setString(1, newName);
+			updatePstmt.setString(2, newCategory);
+			updatePstmt.setString(3, newLocation);
+			updatePstmt.setString(4, newDescription);
+			updatePstmt.setInt(5, placeId);
+
+			int rows = updatePstmt.executeUpdate();
+
+			if (rows > 0) {
+				System.out.println("✅ Success! Place updated successfully.");
+			} else {
+				System.out.println("❌ Error: Update failed.");
+			}
+
+			// Close resources
+			rs.close();
+			selectPstmt.close();
+			updatePstmt.close();
+			connection.close();
+
+		} catch (SQLException e) {
+			System.out.println("❌ Error: Failed to update place.");
+			System.out.println("   Error message: " + e.getMessage());
+		}
+	}
 
     // Delete a place from the city
     private static void deletePlace() {
@@ -735,5 +753,13 @@ public class SmartCityApp {
             System.out.println("❌ Error: Failed to delete place from database.");
             System.out.println("   Error message: " + e.getMessage());
         }
+		
+		
     }
+	private static boolean isValidPlaceName(String name) {
+		return name != null && !name.trim().isEmpty();
+	}
+	private static boolean isValidLocation(String location) {
+		return location != null && !location.trim().isEmpty();
+	}
 }
