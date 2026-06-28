@@ -1,7 +1,6 @@
 package com.smartcity.main;
 
 import java.util.InputMismatchException;
-import java.util.MissingFormatArgumentException;
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -126,7 +125,7 @@ public class SmartCityApp {
             PreparedStatement insertPstmt = connection.prepareStatement(insertQuery);
             insertPstmt.setString(1, username);
             insertPstmt.setString(2, password);
-            insertPstmt.setString(3, "ADMIN"); // Default role for new users
+            insertPstmt.setString(3, "USER"); // Default role for new users
 
             // Execute insert
             int rowsAffected = insertPstmt.executeUpdate();
