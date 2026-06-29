@@ -20,6 +20,7 @@ public class SmartCityApp {
 
         // Loop to repeatedly show menu until user exits
         while (isRunning) {
+
             displayMenu();
 
             // Get user's choice
@@ -103,34 +104,37 @@ public class SmartCityApp {
 
         try {
             // Get database connection
-            Connection connection = DBConnection.getConnection();
 
-            if (connection == null) {
-                System.out.println("❌ Failed to connect to database.");
-                return;
-            }
+                Connection connection = DBConnection.getConnection();
 
-            // Check if username already exists
-            PreparedStatement checkPstmt = connection.prepareStatement(checkQuery);
-            checkPstmt.setString(1, username);
-            ResultSet resultSet = checkPstmt.executeQuery();
+                if (connection == null) {
+                    System.out.println("❌ Failed to connect to database.");
+                    return;
+                }
 
-            if (resultSet.next()) {
-                System.out.println("❌ Error: Username already exists. Please choose a different username.");
+                // Check if username already exists
+                PreparedStatement checkPstmt = connection.prepareStatement(checkQuery);
+                checkPstmt.setString(1, username);
+                ResultSet resultSet = checkPstmt.executeQuery();
+
+
+                if (resultSet.next()) {
+                    System.out.println("❌ Error: Username already exists. Please choose a different username.");
+                    resultSet.close();
+                    checkPstmt.close();
+                    connection.close();
+                    return;
+                }
+
                 resultSet.close();
                 checkPstmt.close();
-                connection.close();
-                return;
-            }
 
-            resultSet.close();
-            checkPstmt.close();
+                // Create prepared statement for insert
+                PreparedStatement insertPstmt = connection.prepareStatement(insertQuery);
+                insertPstmt.setString(1, username);
+                insertPstmt.setString(2, password);
+                insertPstmt.setString(3, "USER"); // Default role for new users
 
-            // Create prepared statement for insert
-            PreparedStatement insertPstmt = connection.prepareStatement(insertQuery);
-            insertPstmt.setString(1, username);
-            insertPstmt.setString(2, password);
-            insertPstmt.setString(3, "USER"); // Default role for new users
 
             // Execute insert
             int rowsAffected = insertPstmt.executeUpdate();
@@ -213,9 +217,11 @@ public class SmartCityApp {
 
     // Display admin menu with admin-specific options
     private static void showAdminMenu(String username) {
+
         boolean inAdminMenu = true;
 
         while (inAdminMenu) {
+            clearScreen();
             System.out.println("\n===== Admin Menu (User: " + username + ") =====");
             System.out.println("1. View all users");
             System.out.println("2. Manage city resources");
@@ -252,6 +258,7 @@ public class SmartCityApp {
         boolean inUserMenu = true;
 
         while (inUserMenu) {
+            clearScreen();
             System.out.println("\n===== User Menu (User: " + username + ") =====");
             System.out.println("1. Explore city attractions");
             System.out.println("2. Search places");
@@ -758,4 +765,10 @@ public class SmartCityApp {
 	private static boolean isValidLocation(String location) {
 		return location != null && !location.trim().isEmpty();
 	}
+
+    private static void clearScreen() {
+        for(int i = 0; i < 50; i++) {
+            System.out.print(" ");
+        }
+    }
 }
