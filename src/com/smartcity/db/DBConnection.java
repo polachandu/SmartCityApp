@@ -1,5 +1,4 @@
 package com.smartcity.db;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -21,6 +20,7 @@ public class DBConnection {
             System.out.println("   Please add mysql-connector-java JAR to your project.");
             e.printStackTrace();
         }
+
 
         // Ask developer for database password
         Scanner scanner = new Scanner(System.in);
