@@ -10,6 +10,18 @@ import com.smartcity.model.User;
 import com.smartcity.model.Place;
 import com.smartcity.db.DBConnection;
 
+/**
+ * The main entry point for the Smart City Guide application.
+ * This class handles the command-line interface (CLI) interactions,
+ * user authentication (registration & login), and routing to 
+ * respective User or Admin menus. 
+ * <p>
+ * It currently acts as a monolithic controller that directly manages
+ * SQL queries and database connections.
+ * 
+ * @author Rajath2005 (Original Creator)
+ * @version 1.0
+ */
 public class SmartCityApp {
     // Scanner object shared across methods
     private static Scanner scanner = new Scanner(System.in);

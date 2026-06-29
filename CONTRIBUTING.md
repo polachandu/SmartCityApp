@@ -23,7 +23,7 @@ Whether you're fixing a bug, adding a feature, or improving documentation — al
 
 ## 📜 Code of Conduct
 
-By participating in this project, you agree to maintain a respectful and inclusive environment for everyone. Please be kind, constructive, and welcoming — this is a beginner-friendly project.
+By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md) and maintain a respectful and inclusive environment for everyone. Please be kind, constructive, and welcoming — this is a beginner-friendly project.
 
 ---
 
@@ -59,7 +59,7 @@ Found a bug? Please [open an issue](https://github.com/Rajath2005/SmartCityApp/i
 - A clear, descriptive title
 - Steps to reproduce the bug
 - Expected behaviour vs. actual behaviour
-- Your Java version (`java -version`) and operating system
+- Your Java version (`java -version`), MySQL version, and operating system
 - Any relevant error messages or stack traces
 
 ### 💡 Suggesting Features
@@ -85,27 +85,41 @@ Have an idea? [Open an issue](https://github.com/Rajath2005/SmartCityApp/issues)
 ### Prerequisites
 
 - **Java JDK 8 or higher** — [Download here](https://www.oracle.com/java/technologies/downloads/)
+- **MySQL Server** — [Download here](https://dev.mysql.com/downloads/installer/)
 - A terminal or an IDE (IntelliJ IDEA, Eclipse, or VS Code)
+- **MySQL JDBC Driver** — Ensure `mysql-connector-java.jar` is in your project's classpath.
 
-Verify your Java installation:
+Verify your Java and MySQL installations:
 ```bash
 java -version
+mysql --version
 ```
+
+### Database Setup
+
+Before running the application, you must initialize the MySQL database:
+
+1. Open your terminal or MySQL client.
+2. Run the provided SQL setup script:
+   ```bash
+   mysql -u root -p < db_setup.sql
+   ```
+3. This will create the `smart_city_guide` database, the `users` table, and the `places` table, and it will insert a default admin user.
 
 ### Build & Run
 
 ```bash
 # Navigate into the source directory
-cd SmartCityApp/src
+cd src
 
-# Compile the application
+# Compile the application (Ensure your classpath includes the MySQL JDBC driver)
 javac com/smartcity/main/SmartCityApp.java
 
 # Run the application
 java com.smartcity.main.SmartCityApp
 ```
 
-> 💡 Using an IDE? Import the project and run `SmartCityApp.java` directly — no terminal needed.
+> 💡 Using an IDE? Import the project, add the MySQL connector to your project structure/dependencies, and run `SmartCityApp.java` directly — no terminal needed.
 
 ### Keeping Your Fork Up to Date
 
@@ -129,6 +143,7 @@ git merge upstream/main
 - Use meaningful variable names — avoid single-letter names except in loops.
 - Remove unused imports, variables, and dead code before submitting.
 - Maintain consistent indentation (4 spaces, no tabs).
+- **Security Check:** Never hardcode production passwords. Use parameterized queries (PreparedStatements) for all SQL logic.
 
 ---
 
@@ -153,7 +168,7 @@ Write clear, concise commit messages. Use the following format:
 ```
 ✨ Add: search places by rating
 🐛 Fix: null pointer in login flow
-📝 Docs: update README setup instructions
+📝 Docs: update README database setup instructions
 ```
 
 ---
@@ -163,8 +178,8 @@ Write clear, concise commit messages. Use the following format:
 - Target the `main` branch for all pull requests.
 - Keep PRs focused — one feature or fix per PR.
 - Fill in the pull request template completely (title, description, linked issue).
-- Reference the related issue in the PR description (e.g., `Closes #42`).
-- Make sure the code compiles and runs without errors before submitting.
+- Reference the related issue in the PR description (e.g., `Closes #42` or `Fixes #23`).
+- Make sure the code compiles and runs without errors (including database interactions) before submitting.
 - Respond promptly to review feedback and push updates to the same branch.
 
 ---
@@ -172,6 +187,12 @@ Write clear, concise commit messages. Use the following format:
 ## 🌱 Good First Issues
 
 New to open source? Look for issues tagged [`good first issue`](https://github.com/Rajath2005/SmartCityApp/issues?q=label%3A%22good+first+issue%22) — they are specifically selected to be beginner-friendly entry points into the codebase.
+
+**Current Focus Areas for Beginners:**
+If you are looking for things to build, we highly recommend looking into these architectural improvements:
+1.  **Migrating to DAOs:** Currently, `SmartCityApp.java` handles all SQL queries. Refactoring this logic into separate Data Access Objects (e.g., `UserDAO.java`, `PlaceDAO.java`) is a great way to learn Layered Architecture!
+2.  **Resource Leaks (See Issue #23):** Implementing Java's `try-with-resources` blocks to safely manage JDBC Connections and PreparedStatements.
+3.  **Password Security:** The application currently stores passwords in plain text. Implementing a hashing algorithm like BCrypt would be a massive improvement.
 
 ---
 

@@ -12,19 +12,17 @@
 <br/>
 
 [![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.java.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![CLI](https://img.shields.io/badge/Interface-CLI-blue?style=for-the-badge&logo=windowsterminal&logoColor=white)]()
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge&logo=github)](https://github.com/Rajath2005/SmartCityApp/pulls)
 [![Contributors](https://img.shields.io/github/contributors/Rajath2005/SmartCityApp?style=for-the-badge&color=orange)](https://github.com/Rajath2005/SmartCityApp/graphs/contributors)
-[![Stars](https://img.shields.io/github/stars/Rajath2005/SmartCityApp?style=for-the-badge&color=yellow)](https://github.com/Rajath2005/SmartCityApp/stargazers)
-[![Forks](https://img.shields.io/github/forks/Rajath2005/SmartCityApp?style=for-the-badge&color=blue)](https://github.com/Rajath2005/SmartCityApp/network/members)
-[![Issues](https://img.shields.io/github/issues/Rajath2005/SmartCityApp?style=for-the-badge&color=red)](https://github.com/Rajath2005/SmartCityApp/issues)
-[![Open Source Helpers](https://www.codetriage.com/rajath2005/smartcityapp/badges/users.svg)](https://www.codetriage.com/rajath2005/smartcityapp)
+
 <br/>
 
 [🚀 Get Started](#-getting-started) &nbsp;|&nbsp;
 [✨ Features](#-features) &nbsp;|&nbsp;
-[🏗️ Project Structure](#️-project-structure) &nbsp;|&nbsp;
+[🏗️ Architecture](#️-architecture--project-structure) &nbsp;|&nbsp;
 [🤝 Contributing](#-contributing) &nbsp;|&nbsp;
 [🗺️ Roadmap](#️-roadmap)
 
@@ -34,11 +32,11 @@
 
 ## 📌 Overview
 
-**Smart City Guide** is an interactive, console-based Java application that helps residents and tourists **discover, search, and navigate city attractions** with ease. It simulates a smart city environment with a complete role-based system for both regular users and administrators.
+**Smart City Guide** is an interactive, console-based Java application that helps residents and tourists **discover, search, and navigate city attractions** with ease. It acts as an intelligent city companion with a complete role-based system for both regular users and administrators.
 
 Whether you're looking for the best restaurant downtown or managing the city's attraction database as an admin — this app has you covered.
 
-> ⚠️ **Note:** The application currently uses **in-memory storage**. All data resets when the application is restarted. Persistent storage is on the roadmap!
+> ⚠️ **Note:** The application uses a **MySQL Database** for persistent storage. You will need to set up a local database before running the app. See the [Database Setup](#-database-setup) section below.
 
 ---
 
@@ -48,11 +46,11 @@ Whether you're looking for the best restaurant downtown or managing the city's a
 
 | Feature | Description |
 |---|---|
-| 🔐 **Register & Login** | Secure account creation and authentication |
-| 🗺️ **View Attractions** | Browse a curated list of city places |
-| 🔍 **Search by Category** | Find places by type — Restaurant, Park, Hotel, Museum |
-| 📍 **Search by Location** | Find places in specific areas like Downtown or Main Street |
-| 🚗 **Navigation** | Simulated access to directions and nearby services |
+| 🔐 **Register & Login** | Secure account creation and authentication. |
+| 🗺️ **View Attractions** | Browse a curated list of city places. |
+| 🔍 **Search by Category** | Find places by type — Restaurant, Park, Hotel, Museum. |
+| 📍 **Search by Location** | Find places in specific areas like Downtown or Main Street. |
+| 🚗 **Navigation** | Simulated access to directions and nearby services. |
 
 ---
 
@@ -60,14 +58,16 @@ Whether you're looking for the best restaurant downtown or managing the city's a
 
 | Feature | Description |
 |---|---|
-| ➕ **Add Place** | Add new city attractions to the database |
-| ✏️ **Update Place** | Edit details of existing places |
-| ❌ **Delete Place** | Remove outdated or incorrect entries |
-| 📊 **System Monitoring** | View system logs and user activity (Simulated) |
+| ➕ **Add Place** | Add new city attractions to the database. |
+| ✏️ **Update Place** | Edit details of existing places. |
+| ❌ **Delete Place** | Remove outdated or incorrect entries. |
+| 📊 **System Monitoring** | View system logs and user activity (Simulated). |
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Architecture & Project Structure
+
+The application currently follows a monolithic architecture built around a centralized controller (`SmartCityApp.java`), making it an excellent starting point for beginners to understand Java control flows and JDBC. We are actively looking for contributors to help us refactor this into a Layered Architecture (MVC).
 
 ```
 SmartCityGuide/
@@ -79,22 +79,19 @@ SmartCityGuide/
 │   └── com/
 │       └── smartcity/
 │           ├── 📁 main/
-│           │   └── SmartCityApp.java    # Main entry point & controller
-│           └── 📁 model/
-│               ├── Place.java           # City place data model
-│               └── User.java            # User data model & roles
+│           │   └── SmartCityApp.java    # Main entry point, controller & UI logic
+│           ├── 📁 model/
+│           │   ├── Place.java           # City place data model (POJO)
+│           │   └── User.java            # User data model & roles (POJO)
+│           └── 📁 db/
+│               └── DBConnection.java    # JDBC MySQL Connection Manager
 │
+├── db_setup.sql                    # SQL script to initialize the database
 ├── README.md
+├── CONTRIBUTING.md                 # Contribution guidelines
+├── CODE_OF_CONDUCT.md              # Community standards
 └── .gitignore
 ```
-
-### 🔑 Key Classes
-
-| Class | Role |
-|---|---|
-| `SmartCityApp.java` | Main logic, menu flow, and application controller |
-| `Place.java` | Represents a city attraction with name, category, and location |
-| `User.java` | Manages user data, credentials, and role assignment |
 
 ---
 
@@ -105,13 +102,22 @@ SmartCityGuide/
 Make sure you have the following installed:
 
 - ☕ **Java JDK 8 or higher** → [Download here](https://www.oracle.com/java/technologies/downloads/)
+- 🐬 **MySQL Server** → [Download here](https://dev.mysql.com/downloads/installer/)
 - 💻 **Terminal / IDE** → VS Code, IntelliJ IDEA, or Eclipse
+- 📦 **MySQL JDBC Driver** → Ensure `mysql-connector-java.jar` is in your project's classpath.
 
-Verify your Java installation:
+---
 
-```bash
-java -version
-```
+### 💾 Database Setup
+
+Before running the application, you must initialize the MySQL database.
+
+1. Open your MySQL client (e.g., MySQL Workbench or CLI).
+2. Run the provided SQL script:
+   ```bash
+   mysql -u root -p < db_setup.sql
+   ```
+   *(This creates the `smart_city_guide` database and the `users` and `places` tables).*
 
 ---
 
@@ -124,14 +130,14 @@ git clone https://github.com/Rajath2005/SmartCityApp.git
 # 2. Navigate into the project
 cd SmartCityApp/src
 
-# 3. Compile the application
+# 3. Compile the application (Make sure to include the MySQL JDBC Driver in your classpath)
 javac com/smartcity/main/SmartCityApp.java
 
 # 4. Run the application
 java com.smartcity.main.SmartCityApp
 ```
 
-> 💡 **Tip for beginners:** If you're using an IDE like IntelliJ or Eclipse, simply import the project and run `SmartCityApp.java` directly — no terminal needed!
+> 💡 **Tip for beginners:** If you're using an IDE like IntelliJ or Eclipse, import the project and run `SmartCityApp.java` directly. Ensure the MySQL connector library is added to your project structure.
 
 ---
 
@@ -141,65 +147,21 @@ java com.smartcity.main.SmartCityApp
 |---|---|
 | **Language** | Java ☕ |
 | **Interface** | Command Line Interface (CLI) |
-| **Data Storage** | In-Memory (`HashMap`, `ArrayList`) |
-| **Architecture** | Role-Based (User / Admin) |
+| **Data Storage** | MySQL Database 🐬 |
+| **Architecture** | Monolithic (Role-Based) |
 
 ---
 
 ## 🤝 Contributing
 
-We ❤️ contributions — whether you're fixing a bug, adding a feature, or improving docs!
+We ❤️ contributions — whether you're fixing a bug, adding a feature, or improving docs! This project is highly focused on being a welcoming space for beginner Java developers.
 
-### 🌱 First Time Contributing? Start Here!
+### 🌱 Ready to Contribute?
 
-New to open source? Don't worry — here's a step-by-step guide:
+Please read our [**Contributing Guidelines**](CONTRIBUTING.md) to learn how to get started. 
+We have specifically outlined **Good First Issues** (like refactoring to DAOs and fixing resource leaks) in the `CONTRIBUTING.md` file.
 
-**Step 1: Fork the repository**
-
-Click the **Fork** button at the top-right of this page.
-
-**Step 2: Clone your fork**
-
-```bash
-git clone https://github.com/<your-username>/SmartCityApp.git
-cd SmartCityApp
-```
-
-**Step 3: Create a new branch**
-
-```bash
-git checkout -b feature/your-feature-name
-```
-
-> 🧠 Use a descriptive branch name like `feature/add-search-filter` or `fix/login-bug`.
-
-**Step 4: Make your changes**
-
-Write clean, well-commented code. Test it locally before committing.
-
-**Step 5: Commit your work**
-
-```bash
-git add .
-git commit -m "✨ Add: brief description of your change"
-```
-
-**Step 6: Push and open a Pull Request**
-
-```bash
-git push origin feature/your-feature-name
-```
-
-Then go to your fork on GitHub and click **"Open Pull Request"** 🎉
-
----
-
-### 📋 Contribution Guidelines
-
-- 🐛 **Bug Reports** → Open an [Issue](https://github.com/Rajath2005/SmartCityApp/issues) with a clear description and steps to reproduce
-- 💡 **Feature Requests** → Open an [Issue](https://github.com/Rajath2005/SmartCityApp/issues) with the `enhancement` label
-- 📝 **Documentation** → Improvements to README, comments, or Javadocs are always welcome
-- ✅ **Good First Issues** → Look for issues tagged [`good first issue`](https://github.com/Rajath2005/SmartCityApp/issues?q=label%3A%22good+first+issue%22) to get started easily
+Please also review our [**Code of Conduct**](CODE_OF_CONDUCT.md) before participating.
 
 ---
 
@@ -207,56 +169,29 @@ Then go to your fork on GitHub and click **"Open Pull Request"** 🎉
 
 A huge shoutout to everyone who has contributed to this project! 🙌
 
-<a href="https://github.com/Rajath2005/SmartCityApp/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Rajath2005/SmartCityApp" alt="Contributors" />
-</a>
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
 
-*Want to see your face here? [Make a contribution](#-contributing)!*
+*Want to see your face here? Check out our [Contribution guide](CONTRIBUTING.md)!*
 
 ---
 
 ## 🗺️ Roadmap
 
-Here's what's coming next. Feel free to pick one up!
+Here's what's coming next. Check our [Issues tab](https://github.com/Rajath2005/SmartCityApp/issues) to claim one!
 
-- [ ] 💾 **Persistent Storage** — Save data using file I/O or a database (SQLite/MySQL)
-- [ ] 🌐 **REST API** — Expose features via a Spring Boot REST API
-- [ ] 🖥️ **GUI Interface** — Build a JavaFX or Swing-based graphical UI
-- [ ] ⭐ **Ratings & Reviews** — Let users rate and review places
-- [ ] 🗺️ **Map Integration** — Integrate with a maps API for real navigation
-- [ ] 🔔 **Notifications** — Alert users about new attractions nearby
-- [ ] 🧪 **Unit Tests** — Add JUnit tests for all core classes
-
-> 💡 See something you'd like to build? Check the [Issues tab](https://github.com/Rajath2005/SmartCityApp/issues) or open a new one!
-
----
-
-## 📊 Project Status
-
-| Status | Description |
-|---|---|
-| 🟢 **Active** | Actively maintained and open for contributions |
-| 🏫 **Education** | Built as part of the Creative Coding Progress series |
-| 🤝 **Beginner Friendly** | Great project for Java learners and first-time contributors |
+- [ ] 🏗️ **Architecture Refactor** — Migrate SQL logic from `SmartCityApp` to `DAO` (Data Access Object) classes.
+- [ ] 🔐 **Security** — Hash user passwords (e.g., BCrypt).
+- [ ] 🌐 **REST API** — Expose features via a Spring Boot REST API.
+- [ ] 🖥️ **GUI Interface** — Build a JavaFX or Swing-based graphical UI.
+- [ ] ⭐ **Ratings & Reviews** — Let users rate and review places.
+- [ ] 🧪 **Unit Tests** — Add JUnit tests for all core classes.
 
 ---
 
 ## 📄 License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
-You are free to use, modify, and distribute this project with attribution.
-
----
-
-## ⭐ Support the Project
-
-If you found this project helpful or interesting:
-
-- ⭐ **Star** the repository — it means a lot!
-- 🍴 **Fork** it and build your own version
-- 🤝 **Contribute** a feature or fix
-- 📣 **Share** it with fellow Java learners
 
 ---
 
