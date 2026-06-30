@@ -10,6 +10,18 @@ import com.smartcity.model.User;
 import com.smartcity.model.Place;
 import com.smartcity.db.DBConnection;
 
+/**
+ * The main entry point for the Smart City Guide application.
+ * This class handles the command-line interface (CLI) interactions,
+ * user authentication (registration & login), and routing to 
+ * respective User or Admin menus. 
+ * <p>
+ * It currently acts as a monolithic controller that directly manages
+ * SQL queries and database connections.
+ * 
+ * @author Rajath2005 (Original Creator)
+ * @version 1.0
+ */
 public class SmartCityApp {
     // Scanner object shared across methods
     private static Scanner scanner = new Scanner(System.in);
@@ -81,16 +93,26 @@ public class SmartCityApp {
         System.out.print("Enter username (4-20 alphanumeric characters): ");
         String username = scanner.nextLine();
 
+<<<<<<< HEAD
         if (!isValidUsername(username)) {
             System.out.println(
                     "❌ Error: Invalid username. It must be 4-20 characters long and contain only letters and numbers.");
             return;
+=======
+        //When the username the user chooses is invalid, this activates
+        while(!isValidUsername(username)) {
+            System.out.println("Invalid username. Please try again.");
+            //It allows the user to retry again, and if they're succesful the loop stops
+            System.out.print("Enter username (4-20 alphanumeric characters): ");
+            username = scanner.nextLine();
+>>>>>>> upstream/main
         }
 
         // Get and validate password BEFORE hitting the database
         System.out.print("Enter password (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char): ");
         String password = scanner.nextLine();
 
+<<<<<<< HEAD
         if (password.length() < 8) {
             System.out.println("Password is too short. Minimum 8 characters required.");
             return;
@@ -99,6 +121,14 @@ public class SmartCityApp {
         if (!isValidPassword(password)) {
             System.out.println("❌ Error: Password is too weak. Please meet all requirements.");
             return;
+=======
+        //When the password the user chooses is invalid, this activates
+        while(!isValidPassword(password)) {
+            System.out.println("Invalid password. Please try again.");
+            //It allows the user to retry again, and if they're succesful the loop stops
+            System.out.print("Enter password (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char): ");
+            password = scanner.nextLine();
+>>>>>>> upstream/main
         }
 
         // SQL queries
@@ -560,25 +590,51 @@ public class SmartCityApp {
         // Get place name
         System.out.print("Enter place name: ");
         String name = scanner.nextLine();
+<<<<<<< HEAD
         if (!isValidPlaceName(name)) {
             System.out.println("❌ Error: Place name cannot be empty.");
             return;
         }
+=======
+        //If it's not valid, then the user can try again
+		while (!isValidPlaceName(name)) {
+			System.out.println("❌ Error: Place name cannot be empty.");
+            System.out.print("Enter place name: ");
+            name = scanner.nextLine();
+		}
+>>>>>>> upstream/main
 
         // Get place category
         System.out.print("Enter category (e.g., Hotel, Restaurant, Park): ");
         String category = scanner.nextLine();
+<<<<<<< HEAD
         if (category == null || category.trim().isEmpty()) {
             System.out.println("❌ Error: Category cannot be empty.");
             return;
         }
+=======
+        //If it's not valid, then the user can try again
+		while (category == null || category.trim().isEmpty()) {
+			System.out.println("❌ Error: Category cannot be empty.");
+            System.out.print("Enter category (e.g., Hotel, Restaurant, Park): ");
+            category = scanner.nextLine();
+		}
+>>>>>>> upstream/main
 
         // Get place location
         System.out.print("Enter location: ");
         String location = scanner.nextLine();
+<<<<<<< HEAD
         if (!isValidLocation(location)) {
             System.out.println("❌ Error: Location cannot be empty.");
             return;
+=======
+        //If it's not valid, then the user can try again
+		while (!isValidLocation(location)) {
+            System.out.println("❌ Error: Location cannot be empty.");
+            System.out.print("Enter location: ");
+            location = scanner.nextLine();
+>>>>>>> upstream/main
         }
 
         // Get place description
@@ -695,6 +751,7 @@ public class SmartCityApp {
             if (newDescription.isEmpty())
                 newDescription = currentDescription;
 
+<<<<<<< HEAD
             // 🔥 VALIDATION
             if (newName == null || newName.trim().isEmpty()) {
                 System.out.println("❌ Error: Place name cannot be empty.");
@@ -718,6 +775,15 @@ public class SmartCityApp {
             updatePstmt.setString(3, newLocation);
             updatePstmt.setString(4, newDescription);
             updatePstmt.setInt(5, placeId);
+=======
+			// Single correct update query
+			PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
+			updatePstmt.setString(1, newName);
+			updatePstmt.setString(2, newCategory);
+			updatePstmt.setString(3, newLocation);
+			updatePstmt.setString(4, newDescription);
+			updatePstmt.setInt(5, placeId);
+>>>>>>> upstream/main
 
             int rows = updatePstmt.executeUpdate();
 
