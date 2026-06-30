@@ -58,14 +58,17 @@ public class SmartCityApp {
 
     // Validates username: 4-20 characters, alphanumeric only
     private static boolean isValidUsername(String username) {
-        if (username == null || username.isEmpty()) return false;
+        if (username == null || username.isEmpty())
+            return false;
         String regex = "^[a-zA-Z0-9]{4,20}$";
         return username.matches(regex);
     }
 
-    // Validates password: Minimum 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+    // Validates password: Minimum 8 chars, 1 uppercase, 1 lowercase, 1 number, 1
+    // special char
     private static boolean isValidPassword(String password) {
-        if (password == null || password.isEmpty()) return false;
+        if (password == null || password.isEmpty())
+            return false;
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password.matches(regex);
     }
@@ -79,13 +82,19 @@ public class SmartCityApp {
         String username = scanner.nextLine();
 
         if (!isValidUsername(username)) {
-            System.out.println("❌ Error: Invalid username. It must be 4-20 characters long and contain only letters and numbers.");
+            System.out.println(
+                    "❌ Error: Invalid username. It must be 4-20 characters long and contain only letters and numbers.");
             return;
         }
 
         // Get and validate password BEFORE hitting the database
         System.out.print("Enter password (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char): ");
         String password = scanner.nextLine();
+
+        if (password.length() < 8) {
+            System.out.println("Password is too short. Minimum 8 characters required.");
+            return;
+        }
 
         if (!isValidPassword(password)) {
             System.out.println("❌ Error: Password is too weak. Please meet all requirements.");
@@ -538,40 +547,39 @@ public class SmartCityApp {
 
         // Get place ID
         System.out.print("Enter place ID: ");
-        int id ;
-        try{
+        int id;
+        try {
             id = scanner.nextInt();
             scanner.nextLine();
-        }catch (InputMismatchException e){
+        } catch (InputMismatchException e) {
             System.out.println("❌ Invalid ID. Please enter a number.");
             scanner.nextLine(); // Clear newline from input buffer
             return;
         }
 
-
         // Get place name
         System.out.print("Enter place name: ");
         String name = scanner.nextLine();
-		if (!isValidPlaceName(name)) {
-			System.out.println("❌ Error: Place name cannot be empty.");
-			return;
-		}
+        if (!isValidPlaceName(name)) {
+            System.out.println("❌ Error: Place name cannot be empty.");
+            return;
+        }
 
         // Get place category
         System.out.print("Enter category (e.g., Hotel, Restaurant, Park): ");
         String category = scanner.nextLine();
-		if (category == null || category.trim().isEmpty()) {
-			System.out.println("❌ Error: Category cannot be empty.");
-			return;
-		}
+        if (category == null || category.trim().isEmpty()) {
+            System.out.println("❌ Error: Category cannot be empty.");
+            return;
+        }
 
         // Get place location
         System.out.print("Enter location: ");
         String location = scanner.nextLine();
-		if (!isValidLocation(location)) {
-			System.out.println("❌ Error: Location cannot be empty.");
-			return;
-		}
+        if (!isValidLocation(location)) {
+            System.out.println("❌ Error: Location cannot be empty.");
+            return;
+        }
 
         // Get place description
         System.out.print("Enter description: ");
@@ -618,114 +626,118 @@ public class SmartCityApp {
 
     // Update an existing place in the city
     private static void updatePlace() {
-		System.out.println("\n--- Update Place ---");
+        System.out.println("\n--- Update Place ---");
 
-		System.out.print("Enter place ID to update: ");
-		int placeId ;
+        System.out.print("Enter place ID to update: ");
+        int placeId;
         try {
-            placeId =scanner.nextInt();
+            placeId = scanner.nextInt();
             scanner.nextLine();
-        }catch (InputMismatchException e){
+        } catch (InputMismatchException e) {
             System.out.println("❌ Invalid ID. Please enter a number.");
             scanner.nextLine();
             return;
         }
 
-		String selectQuery = "SELECT * FROM places WHERE id = ?";
-		String updateQuery = "UPDATE places SET name = ?, category = ?, location = ?, description = ? WHERE id = ?";
+        String selectQuery = "SELECT * FROM places WHERE id = ?";
+        String updateQuery = "UPDATE places SET name = ?, category = ?, location = ?, description = ? WHERE id = ?";
 
-		try {
-			Connection connection = DBConnection.getConnection();
+        try {
+            Connection connection = DBConnection.getConnection();
 
-			if (connection == null) {
-				System.out.println("❌ Failed to connect to database.");
-				return;
-			}
+            if (connection == null) {
+                System.out.println("❌ Failed to connect to database.");
+                return;
+            }
 
-			// Fetch existing place
-			PreparedStatement selectPstmt = connection.prepareStatement(selectQuery);
-			selectPstmt.setInt(1, placeId);
-			ResultSet rs = selectPstmt.executeQuery();
+            // Fetch existing place
+            PreparedStatement selectPstmt = connection.prepareStatement(selectQuery);
+            selectPstmt.setInt(1, placeId);
+            ResultSet rs = selectPstmt.executeQuery();
 
-			if (!rs.next()) {
-				System.out.println("❌ Error: Place with ID " + placeId + " not found.");
-				return;
-			}
+            if (!rs.next()) {
+                System.out.println("❌ Error: Place with ID " + placeId + " not found.");
+                return;
+            }
 
-			// Existing values
-			String currentName = rs.getString("name");
-			String currentCategory = rs.getString("category");
-			String currentLocation = rs.getString("location");
-			String currentDescription = rs.getString("description");
+            // Existing values
+            String currentName = rs.getString("name");
+            String currentCategory = rs.getString("category");
+            String currentLocation = rs.getString("location");
+            String currentDescription = rs.getString("description");
 
-			System.out.println("\nCurrent details:");
-			System.out.println("Name: " + currentName);
-			System.out.println("Category: " + currentCategory);
-			System.out.println("Location: " + currentLocation);
-			System.out.println("Description: " + currentDescription);
+            System.out.println("\nCurrent details:");
+            System.out.println("Name: " + currentName);
+            System.out.println("Category: " + currentCategory);
+            System.out.println("Location: " + currentLocation);
+            System.out.println("Description: " + currentDescription);
 
-			// Take new inputs
-			System.out.print("\nEnter new name (or press Enter to keep current): ");
-			String newName = scanner.nextLine();
+            // Take new inputs
+            System.out.print("\nEnter new name (or press Enter to keep current): ");
+            String newName = scanner.nextLine();
 
-			System.out.print("Enter new category (or press Enter to keep current): ");
-			String newCategory = scanner.nextLine();
+            System.out.print("Enter new category (or press Enter to keep current): ");
+            String newCategory = scanner.nextLine();
 
-			System.out.print("Enter new location (or press Enter to keep current): ");
-			String newLocation = scanner.nextLine();
+            System.out.print("Enter new location (or press Enter to keep current): ");
+            String newLocation = scanner.nextLine();
 
-			System.out.print("Enter new description (or press Enter to keep current): ");
-			String newDescription = scanner.nextLine();
+            System.out.print("Enter new description (or press Enter to keep current): ");
+            String newDescription = scanner.nextLine();
 
-			// Use old values if input is empty
-			if (newName.isEmpty()) newName = currentName;
-			if (newCategory.isEmpty()) newCategory = currentCategory;
-			if (newLocation.isEmpty()) newLocation = currentLocation;
-			if (newDescription.isEmpty()) newDescription = currentDescription;
+            // Use old values if input is empty
+            if (newName.isEmpty())
+                newName = currentName;
+            if (newCategory.isEmpty())
+                newCategory = currentCategory;
+            if (newLocation.isEmpty())
+                newLocation = currentLocation;
+            if (newDescription.isEmpty())
+                newDescription = currentDescription;
 
-			// 🔥 VALIDATION
-			if (newName == null || newName.trim().isEmpty()) {
-				System.out.println("❌ Error: Place name cannot be empty.");
-				return;
-			}
+            // 🔥 VALIDATION
+            if (newName == null || newName.trim().isEmpty()) {
+                System.out.println("❌ Error: Place name cannot be empty.");
+                return;
+            }
 
-			if (newLocation == null || newLocation.trim().isEmpty()) {
-				System.out.println("❌ Error: Location cannot be empty.");
-				return;
-			}
+            if (newLocation == null || newLocation.trim().isEmpty()) {
+                System.out.println("❌ Error: Location cannot be empty.");
+                return;
+            }
 
-			if (newCategory == null || newCategory.trim().isEmpty()) {
-				System.out.println("❌ Error: Category cannot be empty.");
-				return;
-			}
+            if (newCategory == null || newCategory.trim().isEmpty()) {
+                System.out.println("❌ Error: Category cannot be empty.");
+                return;
+            }
 
-			// Single correct update query
-			PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
-			updatePstmt.setString(1, newName);
-			updatePstmt.setString(2, newCategory);
-			updatePstmt.setString(3, newLocation);
-			updatePstmt.setString(4, newDescription);
-			updatePstmt.setInt(5, placeId);
+            // Single correct update query
+            PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
+            updatePstmt.setString(1, newName);
+            updatePstmt.setString(2, newCategory);
+            updatePstmt.setString(3, newLocation);
+            updatePstmt.setString(4, newDescription);
+            updatePstmt.setInt(5, placeId);
 
-			int rows = updatePstmt.executeUpdate();
+            int rows = updatePstmt.executeUpdate();
 
-			if (rows > 0) {
-				System.out.println("✅ Success! Place updated successfully.");
-			} else {
-				System.out.println("❌ Error: Update failed.");
-			}
+            if (rows > 0) {
+                System.out.println("✅ Success! Place updated successfully.");
+            } else {
+                System.out.println("❌ Error: Update failed.");
+            }
 
-			// Close resources
-			rs.close();
-			selectPstmt.close();
-			updatePstmt.close();
-			connection.close();
+            // Close resources
+            rs.close();
+            selectPstmt.close();
+            updatePstmt.close();
+            connection.close();
 
-		} catch (SQLException e) {
-			System.out.println("❌ Error: Failed to update place.");
-			System.out.println("   Error message: " + e.getMessage());
-		}
-	}
+        } catch (SQLException e) {
+            System.out.println("❌ Error: Failed to update place.");
+            System.out.println("   Error message: " + e.getMessage());
+        }
+    }
 
     // Delete a place from the city
     private static void deletePlace() {
@@ -737,7 +749,7 @@ public class SmartCityApp {
         try {
             placeId = scanner.nextInt();
             scanner.nextLine();
-        }catch (InputMismatchException e){
+        } catch (InputMismatchException e) {
             System.out.println("❌ Invalid ID. Please enter a number.");
             scanner.nextLine(); // Clear newline from input buffer
             return;
@@ -776,13 +788,14 @@ public class SmartCityApp {
             System.out.println("❌ Error: Failed to delete place from database.");
             System.out.println("   Error message: " + e.getMessage());
         }
-		
-		
+
     }
-	private static boolean isValidPlaceName(String name) {
-		return name != null && !name.trim().isEmpty();
-	}
-	private static boolean isValidLocation(String location) {
-		return location != null && !location.trim().isEmpty();
-	}
+
+    private static boolean isValidPlaceName(String name) {
+        return name != null && !name.trim().isEmpty();
+    }
+
+    private static boolean isValidLocation(String location) {
+        return location != null && !location.trim().isEmpty();
+    }
 }
