@@ -116,16 +116,12 @@ public class SmartCityApp {
 
         try {
             // Get database connection
-<<<<<<< HEAD
             Connection connection = DBConnection.getConnection();
 
             if (connection == null) {
                 System.out.println("❌ Failed to connect to database.");
                 return;
             }
-=======
-                Connection connection = DBConnection.getConnection();
->>>>>>> e5ef2e0 (Fix standardized error message)
 
             // Check if username already exists
             PreparedStatement checkPstmt = connection.prepareStatement(checkQuery);
@@ -164,7 +160,7 @@ public class SmartCityApp {
 
         } catch (SQLException e) {
             System.out.println("❌ Error: Failed to register user.");
-            System.out.println("   Error message: " + e.getMessage());
+            System.out.println("Error message: " + e.getMessage());
         }
     }
 
@@ -224,7 +220,7 @@ public class SmartCityApp {
 
         } catch (SQLException e) {
             System.out.println("❌ Error: Failed to login user.");
-            System.out.println("   Error message: " + e.getMessage());
+            System.out.println("Error message: " + e.getMessage());
         }
     }
 
@@ -347,7 +343,7 @@ public class SmartCityApp {
 
             // Handle case when no places found
             if (!hasResults) {
-                System.out.println("[!] No places found");
+                System.out.println("[!] No places available at the moment");
             }
 
             System.out.println("\n" + "-".repeat(50));
@@ -440,7 +436,7 @@ public class SmartCityApp {
 
             // Handle no results found
             if (!found) {
-                System.out.println("[!] No results found for '"  + searchCategory + "'");
+                System.out.println("[!] No results found in category: '"  + searchCategory + "'");
             }
 
             System.out.println("-".repeat(50));
@@ -500,7 +496,7 @@ public class SmartCityApp {
 
             // Handle no results found
             if (!found) {
-                System.out.println("[!] No results found for '" + searchLocation + "'");
+                System.out.println("[!] No results found in location: '" + searchLocation + "'");
             }
 
             System.out.println("-".repeat(50));
