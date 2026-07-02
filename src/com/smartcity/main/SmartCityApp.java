@@ -70,6 +70,7 @@ public class SmartCityApp {
 
     // Display menu options to user
     private static void displayMenu() {
+        clearScreen();
         System.out.println("\n===== Smart City Guide Menu =====");
         System.out.println("1. Register");
         System.out.println("2. Login");
@@ -238,6 +239,7 @@ public class SmartCityApp {
         boolean inAdminMenu = true;
 
         while (inAdminMenu) {
+            clearScreen();
             System.out.println("\n===== Admin Menu (User: " + username + ") =====");
             System.out.println("1. View all users");
             System.out.println("2. Manage city resources");
@@ -824,5 +826,15 @@ public class SmartCityApp {
 
     private static boolean isValidLocation(String location) {
         return location != null && !location.trim().isEmpty();
+    }
+
+    // Clear console logs: wipes previous menu/output from terminal before
+    // redrawing, keeping the CLI screen clean between menu displays.
+    // Note: relies on ANSI escape codes, works in real terminals (Linux/macOS,
+    // Windows Terminal/PowerShell with VT processing), but has no effect in
+    // IDE run consoles (IntelliJ/Eclipse) since those don't interpret ANSI.
+    public static void clearScreen(){
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
