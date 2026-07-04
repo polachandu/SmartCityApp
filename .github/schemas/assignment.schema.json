@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Rajath2005/SmartCityApp/schemas/assignment",
+  "title": "Assignment Intent Result",
+  "description": "Schema for validating AI-generated assignment intent detection output. The AI determines whether a comment is requesting issue assignment.",
+  "type": "object",
+  "required": ["should_assign", "reason"],
+  "properties": {
+    "should_assign": {
+      "type": "boolean",
+      "description": "Whether the comment is requesting to be assigned to the issue."
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 200,
+      "description": "Brief explanation of why this is or isn't an assignment request."
+    }
+  },
+  "additionalProperties": false
+}

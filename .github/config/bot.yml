@@ -1,0 +1,153 @@
+# =============================================================================
+# SmartCityApp AI Maintainer Configuration
+# =============================================================================
+# This file controls all behavior of the AI-powered repository maintainer.
+# See .github/AI_MAINTAINER.md for full documentation of every field.
+#
+# Configuration priority:
+#   1. Environment variables (GITHUB_TOKEN, HF_TOKEN, GITHUB_REPOSITORY, etc.)
+#   2. This YAML file (model settings, rules, thresholds, messages)
+#
+# Environment variables always override YAML values for secrets and
+# runtime-specific settings.
+# =============================================================================
+
+version: 1
+
+# -----------------------------------------------------------------------------
+# Repository Configuration
+# -----------------------------------------------------------------------------
+# By default, the repository is read from the GITHUB_REPOSITORY environment
+# variable (automatically set by GitHub Actions as 'owner/name').
+# Uncomment below to override for local development only.
+# -----------------------------------------------------------------------------
+repository:
+  # owner: "Rajath2005"
+  # name: "SmartCityApp"
+
+# -----------------------------------------------------------------------------
+# AI Model Registry
+# -----------------------------------------------------------------------------
+# 'default' selects the active model from the registry below.
+# Override at runtime with the AI_MODEL environment variable.
+#
+# Each model entry requires:
+#   id: Full Hugging Face model identifier
+#   max_tokens: Maximum tokens for the model's response
+#   temperature: Sampling temperature (0.0 = deterministic, 1.0 = creative)
+# -----------------------------------------------------------------------------
+models:
+  default: "deepseek-v4-flash"
+  registry:
+    deepseek-v4-flash:
+      id: "deepseek-ai/DeepSeek-V3-0324"
+      max_tokens: 4096
+      temperature: 0.3
+
+    qwen-2.5-coder:
+      id: "Qwen/Qwen2.5-Coder-32B-Instruct"
+      max_tokens: 4096
+      temperature: 0.3
+
+    gemma-3:
+      id: "google/gemma-3-27b-it"
+      max_tokens: 4096
+      temperature: 0.3
+
+    llama-4:
+      id: "meta-llama/Llama-4-Scout-17B-16E-Instruct"
+      max_tokens: 4096
+      temperature: 0.3
+
+# -----------------------------------------------------------------------------
+# Retry Policy
+# -----------------------------------------------------------------------------
+# Controls exponential backoff for API calls (GitHub + Hugging Face).
+# delay = backoff_factor ^ attempt_number
+# -----------------------------------------------------------------------------
+retry:
+  max_retries: 3
+  backoff_factor: 2.0
+  retry_status_codes: [429, 500, 502, 503]
+
+# -----------------------------------------------------------------------------
+# Issue Assignment Configuration
+# -----------------------------------------------------------------------------
+# trigger_phrases: Comments matching these phrases trigger auto-assignment.
+# max_open_issues_per_user: Maximum open issues a user can be assigned to.
+# auto_labels: Labels added to issues when assigned via the bot.
+# -----------------------------------------------------------------------------
+assignment:
+  trigger_phrases:
+    - "assign me"
+    - "please assign"
+    - "i'd like to work on this"
+    - "can i work on this"
+    - "can you assign this to me"
+  max_open_issues_per_user: 3
+  auto_labels:
+    - "status: assigned"
+
+# -----------------------------------------------------------------------------
+# Welcome Messages
+# -----------------------------------------------------------------------------
+# Sent automatically to first-time contributors.
+# Use {{username}} placeholder for the contributor's GitHub username.
+# -----------------------------------------------------------------------------
+welcome:
+  first_issue_message: |
+    👋 Welcome to **SmartCityApp**, @{{username}}! Thanks for opening your first issue! 🎉
+
+    Here are some useful resources to get started:
+    - 📖 [Contributing Guide](CONTRIBUTING.md)
+    - 📜 [Code of Conduct](CODE_OF_CONDUCT.md)
+    - 🏗️ [Project Architecture](README.md#️-architecture--project-structure)
+
+    A maintainer will review your issue shortly. Happy coding! 🚀
+
+  first_pr_message: |
+    🎉 Welcome, @{{username}}! Thanks for your first pull request! 🙌
+
+    A maintainer will review your changes shortly. In the meantime:
+    - Make sure your PR is linked to an issue (e.g., `Closes #42`)
+    - Check that your code follows our [Coding Standards](CONTRIBUTING.md#-coding-standards)
+    - Review the [PR Guidelines](CONTRIBUTING.md#-pull-request-guidelines)
+
+    Thanks for contributing to SmartCityApp! 💙
+
+# -----------------------------------------------------------------------------
+# Review Configuration
+# -----------------------------------------------------------------------------
+# large_pr_threshold: Line count above which a PR is flagged as "too large".
+# max_diff_length: Maximum diff characters sent to the AI (truncated beyond).
+# enabled_rules: List of deterministic rules to run before AI review.
+# -----------------------------------------------------------------------------
+review:
+  large_pr_threshold: 500
+  max_diff_length: 10000
+  enabled_rules:
+    - merge_conflicts
+    - missing_linked_issue
+    - large_pr
+    - bad_patterns
+
+# -----------------------------------------------------------------------------
+# Label Mappings
+# -----------------------------------------------------------------------------
+# Maps semantic label names to actual GitHub label strings.
+# Ensures consistency across all bot operations.
+# -----------------------------------------------------------------------------
+labels:
+  assigned: "status: assigned"
+  needs_review: "status: needs review"
+  approved: "status: approved"
+  changes_requested: "status: changes requested"
+
+# -----------------------------------------------------------------------------
+# Logging
+# -----------------------------------------------------------------------------
+# Override at runtime with the LOG_LEVEL environment variable.
+# Valid values: DEBUG, INFO, WARNING, ERROR, CRITICAL
+# -----------------------------------------------------------------------------
+logging:
+  level: "INFO"

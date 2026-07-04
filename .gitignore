@@ -32,3 +32,15 @@ bin/
 
 ### AI Agents ###
 .agents/
+
+### Python ###
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+.pytest_cache/
+*.egg-info/
+dist/
+build/

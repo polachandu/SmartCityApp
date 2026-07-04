@@ -1,0 +1,18 @@
+# =============================================================================
+# SmartCityApp AI Maintainer — Python Dependencies
+# =============================================================================
+# Install: pip install -r requirements.txt
+# =============================================================================
+
+# HTTP client (async-capable, modern, built-in timeout controls)
+httpx>=0.27.0,<1.0.0
+
+# YAML configuration parsing
+pyyaml>=6.0,<7.0
+
+# JSON Schema validation for AI output
+jsonschema>=4.21,<5.0
+
+# Testing
+pytest>=8.0,<9.0
+pytest-asyncio>=0.23,<1.0

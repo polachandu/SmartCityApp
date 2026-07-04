@@ -188,17 +188,17 @@ A huge shoutout to everyone who has contributed to this project! 🙌
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/sshrrutiiii">
+                    <img src="https://avatars.githubusercontent.com/u/196079073?v=4" width="100;" alt="sshrrutiiii"/>
+                    <br />
+                    <sub><b>Shruti Dixit</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/rajibul004">
                     <img src="https://avatars.githubusercontent.com/u/157000457?v=4" width="100;" alt="rajibul004"/>
                     <br />
                     <sub><b>Rajibul Mondal</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/HemendraRoy">
-                    <img src="https://avatars.githubusercontent.com/u/158675218?v=4" width="100;" alt="HemendraRoy"/>
-                    <br />
-                    <sub><b>HemendraRoy</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -222,13 +222,6 @@ A huge shoutout to everyone who has contributed to this project! 🙌
                     <img src="https://avatars.githubusercontent.com/u/141355948?v=4" width="100;" alt="Nishcahy"/>
                     <br />
                     <sub><b>Nishchay</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/sshrrutiiii">
-                    <img src="https://avatars.githubusercontent.com/u/196079073?v=4" width="100;" alt="sshrrutiiii"/>
-                    <br />
-                    <sub><b>Shruti Dixit</b></sub>
                 </a>
             </td>
 		</tr>
