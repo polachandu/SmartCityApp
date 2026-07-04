@@ -404,21 +404,25 @@ public class SmartCityApp {
     }
 
     // Search places by category from MySQL database
+    // Search places by category from MySQL database
     private static void searchByCategory() {
         System.out.print("\nEnter category to search: ");
         String searchCategory = scanner.nextLine();
 
-        // SQL query with LIKE for case-insensitive search
+        String countQuery = "SELECT COUNT(*) FROM places WHERE LOWER(category) LIKE LOWER(?)";
         String query = "SELECT * FROM places WHERE LOWER(category) LIKE LOWER(?)";
 
         try {
-            // Get database connection
             Connection connection = DBConnection.getConnection();
 
             if (connection == null) {
                 System.out.println("❌ Failed to connect to database.");
                 return;
             }
+
+            // Get and print search result count first
+            int totalCount = getSearchResultCount(connection, countQuery, searchCategory);
+            System.out.println("Found " + totalCount + " places:");
 
             // Create prepared statement with parameter binding
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -464,21 +468,25 @@ public class SmartCityApp {
     }
 
     // Search places by location from MySQL database
+    // Search places by location from MySQL database
     private static void searchByLocation() {
         System.out.print("\nEnter location to search: ");
         String searchLocation = scanner.nextLine();
 
-        // SQL query with LIKE for case-insensitive search
+        String countQuery = "SELECT COUNT(*) FROM places WHERE LOWER(location) LIKE LOWER(?)";
         String query = "SELECT * FROM places WHERE LOWER(location) LIKE LOWER(?)";
 
         try {
-            // Get database connection
             Connection connection = DBConnection.getConnection();
 
             if (connection == null) {
                 System.out.println("❌ Failed to connect to database.");
                 return;
             }
+
+            // Get and print search result count first
+            int totalCount = getSearchResultCount(connection, countQuery, searchLocation);
+            System.out.println("Found " + totalCount + " places:");
 
             // Create prepared statement with parameter binding
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -827,7 +835,25 @@ public class SmartCityApp {
     private static boolean isValidLocation(String location) {
         return location != null && !location.trim().isEmpty();
     }
+     // Helper to get total count of search results
+    private static int getSearchResultCount(Connection connection, String countQuery, String searchTerm) throws SQLException {
+        PreparedStatement countPstmt = connection.prepareStatement(countQuery);
+        countPstmt.setString(1, "%" + searchTerm + "%");
+        ResultSet countRs = countPstmt.executeQuery();
+        
+        int totalCount = 0;
+        if (countRs.next()) {
+            totalCount = countRs.getInt(1);
+        }
+        
+        countRs.close();
+        countPstmt.close();
+        return totalCount;
+    }
+    
+  
 
+    
     // Clear console logs: wipes previous menu/output from terminal before
     // redrawing, keeping the CLI screen clean between menu displays.
     // Note: relies on ANSI escape codes, works in real terminals (Linux/macOS,
