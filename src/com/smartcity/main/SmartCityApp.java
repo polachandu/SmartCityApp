@@ -279,10 +279,9 @@ public class SmartCityApp {
             // Display header
             System.out.println("\n🏙️  ===== ALL CITY ATTRACTIONS =====");
             System.out.println("-".repeat(50));
-
             boolean hasResults = false;
-
             ResultSet resultSet = pstmt.executeQuery();
+
             // Loop through ResultSet and display each place
             while (resultSet.next()) {
                 hasResults = true;
@@ -303,7 +302,6 @@ public class SmartCityApp {
             if (!hasResults) {
                 System.out.println("[!] No places available at the moment.");
             }
-
             System.out.println("\n" + "-".repeat(50));
 
         } catch (SQLException e) {
@@ -379,7 +377,7 @@ public class SmartCityApp {
 
             // Handle no results found
             if (!found) {
-                System.out.println("[!] Place with category" + searchCategory + " not found.");
+                System.out.println("[!] No places found in category: " +  searchCategory);
             }
             System.out.println("-".repeat(50));
 
@@ -421,7 +419,7 @@ public class SmartCityApp {
             }
             // Handle no results found
             if (!found) {
-                System.out.println("[!] Place in location" + searchLocation + " not found.");
+                System.out.println("[!] No places found in location: " + searchLocation);
             }
             System.out.println("-".repeat(50));
 
