@@ -3,6 +3,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .kotlin
+SmartCityGuide.iml
 
 ### Eclipse ###
 .apt_generated
