@@ -26,15 +26,6 @@ public class SmartCityApp {
     // Scanner object shared across methods
     private static Scanner scanner = new Scanner(System.in);
 
-
-    // SQL Query Constants (Login/Register)
-    private static final String CHECK_USERNAME_EXISTS_QUERY = "SELECT id FROM users WHERE username = ?";
-
-    private static final String INSERT_USER_QUERY = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
-
-    private static final String LOGIN_QUERY = "SELECT role FROM users WHERE username = ? AND password = ?";
-
-    
     public static void main(String[] args) {
         System.out.println("Smart City Guide Started Successfully");
 
@@ -94,6 +85,9 @@ public class SmartCityApp {
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password.matches(regex);
     }
+
+    private static final String checkQuery = "SELECT id FROM users WHERE username = ?";
+    private static final String insertQuery = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
 
     // Register new user directly to MySQL database with validation
     private static void register() {
@@ -163,6 +157,8 @@ public class SmartCityApp {
             System.out.println("   Error message: " + e.getMessage());
         }
     }
+
+    private static final String query = "SELECT role FROM users WHERE username = ? AND password = ?";
 
     // Login user by validating credentials from MySQL database
     private static void login() {
@@ -288,6 +284,7 @@ public class SmartCityApp {
         }
     }
 
+    private static final String queryAllPlaces = "SELECT * FROM places";
     // Display all places in the city from MySQL database
     private static void viewAllPlaces() {
         // SQL query to fetch all places
@@ -299,10 +296,9 @@ public class SmartCityApp {
             // Display header
             System.out.println("\n🏙️  ===== ALL CITY ATTRACTIONS =====");
             System.out.println("-".repeat(50));
-
             boolean hasResults = false;
-
             ResultSet resultSet = pstmt.executeQuery();
+
             // Loop through ResultSet and display each place
             while (resultSet.next()) {
                 hasResults = true;
@@ -321,9 +317,8 @@ public class SmartCityApp {
 
             // Handle case when no places found
             if (!hasResults) {
-                System.out.println("❌ No places available at the moment.");
+                System.out.println("[!] No places available at the moment.");
             }
-
             System.out.println("\n" + "-".repeat(50));
 
         } catch (SQLException e) {
@@ -365,6 +360,7 @@ public class SmartCityApp {
         }
     }
 
+    private static final String queryByCategory = "SELECT * FROM places WHERE LOWER(category) LIKE LOWER(?)";
     // Search places by category from MySQL database
     
     private static void searchByCategory() {
@@ -410,7 +406,7 @@ public class SmartCityApp {
 
             // Handle no results found
             if (!found) {
-                System.out.println("❌ No places found in category: " + searchCategory);
+                System.out.println("[!] No places found in category: " +  searchCategory);
             }
             System.out.println("-".repeat(50));
 
@@ -420,6 +416,7 @@ public class SmartCityApp {
         }
     }
 
+    private static final String queryByLocation = "SELECT * FROM places WHERE LOWER(location) LIKE LOWER(?)";
     // Search places by location from MySQL database
     private static void searchByLocation() {
         System.out.print("\nEnter location to search: ");
@@ -461,7 +458,7 @@ public class SmartCityApp {
             }
             // Handle no results found
             if (!found) {
-                System.out.println("❌ No places found in location: " + searchLocation);
+                System.out.println("[!] No places found in location: " + searchLocation);
             }
             System.out.println("-".repeat(50));
 
@@ -589,16 +586,18 @@ public class SmartCityApp {
         }
     }
 
+    private static final String selectQueryUpdate = "SELECT * FROM places WHERE id = ?";
+    private static final String updateQueryPlace = "UPDATE places SET name = ?, category = ?, location = ?, description = ? WHERE id = ?";
     // Update an existing place in the city
     private static void updatePlace() {
         System.out.println("\n--- Update Place ---");
 
         System.out.print("Enter place ID to update: ");
-        int placeId;
+        int placeId ;
         try {
             placeId = scanner.nextInt();
             scanner.nextLine();
-        } catch (InputMismatchException e) {
+        } catch (InputMismatchException e){
             System.out.println("❌ Invalid ID. Please enter a number.");
             scanner.nextLine();
             return;
@@ -622,7 +621,7 @@ public class SmartCityApp {
             ResultSet rs = selectPstmt.executeQuery();
 
             if (!rs.next()) {
-                System.out.println("❌ Error: Place with ID " + placeId + " not found.");
+                System.out.println("[!] Place with ID " + placeId + " not found.");
                 return;
             }
 
@@ -689,6 +688,7 @@ public class SmartCityApp {
         }
     }
 
+    private static final String queryDelete = "DELETE FROM places WHERE id = ?";
     // Delete a place from the city
     private static void deletePlace() {
         System.out.println("\n--- Delete Place ---");
@@ -699,7 +699,7 @@ public class SmartCityApp {
         try {
             placeId = scanner.nextInt();
             scanner.nextLine();
-        } catch (InputMismatchException e) {
+        } catch (InputMismatchException e){
             System.out.println("❌ Invalid ID. Please enter a number.");
             scanner.nextLine(); // Clear newline from input buffer
             return;
@@ -720,7 +720,7 @@ public class SmartCityApp {
             if (rowsAffected > 0) {
                 System.out.println("✅ Success! Place with ID " + placeId + " has been deleted.");
             } else {
-                System.out.println("❌ Error: Place with ID " + placeId + " not found.");
+                System.out.println("[!] Place with ID " + placeId + " not found.");
             }
 
         } catch (SQLException e) {
