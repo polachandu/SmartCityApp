@@ -141,6 +141,43 @@ java com.smartcity.main.SmartCityApp
 
 ---
 
+### 🐳 Run with Docker
+
+No local Java or MySQL install needed — everything runs in containers.
+
+**Prerequisites:** Docker + Docker Compose.
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Rajath2005/SmartCityApp.git
+cd SmartCityApp
+
+# 2. Build and start the app (attached to your terminal, since it's a CLI app)
+docker compose run --rm app
+```
+
+This spins up a MySQL container (auto-seeded with `db_setup.sql`) and runs the app against it. `docker compose run` keeps stdin/stdout attached so menu prompts work interactively.
+
+**Useful commands:**
+
+```bash
+# Start just the database in the background
+docker compose up -d mysql-db
+
+# Rebuild the app image after code changes
+docker compose build app
+
+# Reset the database (wipes all data, re-seeds on next run)
+docker compose down -v
+
+# Stop everything
+docker compose down
+```
+
+Default DB credentials (override via `DB_PASSWORD` env var before running compose): user `root`, password `root`, database `smart_city_guide`.
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Technology |

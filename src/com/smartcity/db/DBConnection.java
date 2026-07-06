@@ -2,28 +2,34 @@ package com.smartcity.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Scanner;
 
 /**
  * Handles the database connection for the Smart City Guide application.
  * This class uses the Singleton pattern approach for providing a connection
- * to the MySQL database. It prompts the user for the root database password
- * upon initialization.
+ * to the MySQL database. Connection settings are read from environment
+ * variables so the app can run unattended (e.g. inside Docker).
  *
  * @author Rajath2005 (Original Creator)
  * @version 1.0
  */
 public class DBConnection {
-    // Database credentials
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/smart_city_guide";
-    private static final String DB_USER = "root";
-    private static String DB_PASSWORD = "";
+    // Database credentials, overridable via environment variables
+    private static final String DB_HOST = getEnv("DB_HOST", "localhost");
+    private static final String DB_PORT = getEnv("DB_PORT", "3306");
+    private static final String DB_NAME = getEnv("DB_NAME", "smart_city_guide");
+    private static final String DB_URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
+    private static final String DB_USER = getEnv("DB_USER", "root");
+    private static final String DB_PASSWORD = getEnv("DB_PASSWORD", "");
+
+    private static String getEnv(String key, String defaultValue) {
+        String value = System.getenv(key);
+        return (value == null || value.isEmpty()) ? defaultValue : value;
+    }
 
     /**
      * Static initialization block.
      * This block is executed once when the class is first loaded into memory.
-     * It loads the MySQL JDBC driver and securely prompts the developer
-     * for the database password via the console.
+     * It loads the MySQL JDBC driver.
      */
     static {
         // Load MySQL JDBC driver
@@ -35,12 +41,6 @@ public class DBConnection {
             System.out.println("   Please add mysql-connector-java JAR to your project.");
             e.printStackTrace();
         }
-
-
-        // Ask developer for database password
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("\n🔐 Enter MySQL password for user 'root': ");
-        DB_PASSWORD = scanner.nextLine();
     }
 
     /**
