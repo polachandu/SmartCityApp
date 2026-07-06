@@ -35,13 +35,10 @@ public class SmartCityApp {
     private static final String SELECT_PLACE_BY_ID_QUERY = "SELECT * FROM places WHERE id = ?";
     private static final String UPDATE_PLACE_QUERY = "UPDATE places SET name = ?, category = ?, location = ?, description = ? WHERE id = ?";
     private static final String DELETE_PLACE_QUERY = "DELETE FROM places WHERE id = ?";
-
-    // SQL query and hash-format constants used by the plaintext-password migration
     private static final String SELECT_ALL_CREDENTIALS_QUERY = "SELECT id, password FROM users";
 
     private static final String UPDATE_PASSWORD_QUERY = "UPDATE users SET password = ? WHERE id = ?";
 
-    // A SHA-256 hash is always exactly 64 lowercase hex characters; anything else is a legacy plaintext password
     private static final String SHA256_HEX_PATTERN = "^[a-f0-9]{64}$";
 
     public static void main(String[] args) {
@@ -108,23 +105,21 @@ public class SmartCityApp {
         return password.matches(regex);
     }
 
-
-    private static final String checkQuery = "SELECT id FROM users WHERE username = ?";
-    private static final String insertQuery = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
-
     private static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes("UTF-8"));
             StringBuilder sb = new StringBuilder();
-            for (byte b : hash) sb.append(String.format("%02x", b));
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
             return sb.toString();
         } catch (Exception e) {
             throw new RuntimeException("Failed to hash password", e);
         }
     }
 
-    // One-time startup migration: rehashes any legacy plaintext passwords (e.g. the seeded admin account) to SHA-256
+    // One-time startup migration: rehashes any legacy plaintext passwords to SHA-256
     private static void migrateExistingPlaintextPasswords() {
         Connection connection = DBConnection.getConnection();
 
@@ -212,7 +207,7 @@ public class SmartCityApp {
             // Insert new user
             try (PreparedStatement insertPstmt = connection.prepareStatement(INSERT_USER_QUERY)) {
                 insertPstmt.setString(1, username);
-                insertPstmt.setString(2, password);
+                insertPstmt.setString(2, hashPassword(password));
                 insertPstmt.setString(3, "USER"); // Default role for new users
 
                 int rowsAffected = insertPstmt.executeUpdate();
@@ -251,7 +246,7 @@ public class SmartCityApp {
             // Create prepared statement with parameter binding
             try (PreparedStatement pstmt = connection.prepareStatement(LOGIN_QUERY)) {
                 pstmt.setString(1, username);
-                pstmt.setString(2, password);
+                pstmt.setString(2, hashPassword(password));
 
                 try (ResultSet resultSet = pstmt.executeQuery()) {
                     // Check if user credentials match
