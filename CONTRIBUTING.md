@@ -188,6 +188,8 @@ Write clear, concise commit messages. Use the following format:
 
 New to open source? Look for issues tagged [`good first issue`](https://github.com/Rajath2005/SmartCityApp/issues?q=label%3A%22good+first+issue%22) — they are specifically selected to be beginner-friendly entry points into the codebase.
 
+> 💡 **Claiming an issue:** Found one you want to work on? Comment `/assign` or `/take` on it and our bot will assign it to you automatically (as long as it isn't already claimed).
+
 **Current Focus Areas for Beginners:**
 If you are looking for things to build, we highly recommend looking into these architectural improvements:
 1.  **Migrating to DAOs:** Currently, `SmartCityApp.java` handles all SQL queries. Refactoring this logic into separate Data Access Objects (e.g., `UserDAO.java`, `PlaceDAO.java`) is a great way to learn Layered Architecture!
