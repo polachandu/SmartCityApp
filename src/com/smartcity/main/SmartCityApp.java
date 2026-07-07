@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import com.smartcity.model.User;
-import com.smartcity.model.Place;
 import com.smartcity.db.DBConnection;
 
 /**
@@ -83,8 +81,9 @@ public class SmartCityApp {
 
     // Validates username: 4-20 characters, alphanumeric only
     private static boolean isValidUsername(String username) {
-        if (username == null || username.isEmpty())
+        if (username == null || username.isEmpty()) {
             return false;
+        }
         String regex = "^[a-zA-Z0-9]{4,20}$";
         return username.matches(regex);
     }
@@ -92,8 +91,9 @@ public class SmartCityApp {
     // Validates password: Minimum 8 chars, 1 uppercase, 1 lowercase, 1 number, 1
     // special char
     private static boolean isValidPassword(String password) {
-        if (password == null || password.isEmpty())
+        if (password == null || password.isEmpty()) {
             return false;
+        }
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password.matches(regex);
     }
@@ -653,14 +653,18 @@ public class SmartCityApp {
             String newDescription = scanner.nextLine();
 
             // Use old values if input is empty
-            if (newName.isEmpty())
+            if (newName.isEmpty()) {
                 newName = currentName;
-            if (newCategory.isEmpty())
+            }
+            if (newCategory.isEmpty()) {
                 newCategory = currentCategory;
-            if (newLocation.isEmpty())
+            }
+            if (newLocation.isEmpty()) {
                 newLocation = currentLocation;
-            if (newDescription.isEmpty())
+            }
+            if (newDescription.isEmpty()) {
                 newDescription = currentDescription;
+            }
 
             // 🔥 VALIDATION
             if (newName == null || newName.trim().isEmpty()) {

@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 .kotlin
 SmartCityGuide.iml
+.idea
 
 ### Eclipse ###
 .apt_generated
@@ -32,6 +33,10 @@ bin/
 
 ### AI Agents ###
 .agents/
+
+### Maven ###
+target/
+dependency-reduced-pom.xml
 
 ### Python ###
 __pycache__/

@@ -141,6 +141,43 @@ java com.smartcity.main.SmartCityApp
 
 ---
 
+### 🐳 Run with Docker
+
+No local Java or MySQL install needed — everything runs in containers.
+
+**Prerequisites:** Docker + Docker Compose.
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Rajath2005/SmartCityApp.git
+cd SmartCityApp
+
+# 2. Build and start the app (attached to your terminal, since it's a CLI app)
+docker compose run --rm app
+```
+
+This spins up a MySQL container (auto-seeded with `db_setup.sql`) and runs the app against it. `docker compose run` keeps stdin/stdout attached so menu prompts work interactively.
+
+**Useful commands:**
+
+```bash
+# Start just the database in the background
+docker compose up -d mysql-db
+
+# Rebuild the app image after code changes
+docker compose build app
+
+# Reset the database (wipes all data, re-seeds on next run)
+docker compose down -v
+
+# Stop everything
+docker compose down
+```
+
+Default DB credentials (override via `DB_PASSWORD` env var before running compose): user `root`, password `root`, database `smart_city_guide`.
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Technology |
@@ -188,10 +225,24 @@ A huge shoutout to everyone who has contributed to this project! 🙌
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/shikha033">
+                    <img src="https://avatars.githubusercontent.com/u/177534265?v=4" width="100;" alt="shikha033"/>
+                    <br />
+                    <sub><b>Shikha Singh</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/sshrrutiiii">
                     <img src="https://avatars.githubusercontent.com/u/196079073?v=4" width="100;" alt="sshrrutiiii"/>
                     <br />
                     <sub><b>Shruti Dixit</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/cordeirops">
+                    <img src="https://avatars.githubusercontent.com/u/13083210?v=4" width="100;" alt="cordeirops"/>
+                    <br />
+                    <sub><b>Pedro Sbaraini Cordeiro</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -201,6 +252,8 @@ A huge shoutout to everyone who has contributed to this project! 🙌
                     <sub><b>Rajibul Mondal</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/JhansiOruganti-43">
                     <img src="https://avatars.githubusercontent.com/u/155613006?v=4" width="100;" alt="JhansiOruganti-43"/>
@@ -215,8 +268,6 @@ A huge shoutout to everyone who has contributed to this project! 🙌
                     <sub><b>Julito-Dev</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/Nishcahy">
                     <img src="https://avatars.githubusercontent.com/u/141355948?v=4" width="100;" alt="Nishcahy"/>

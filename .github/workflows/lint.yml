@@ -1,0 +1,23 @@
+name: Checkstyle Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Run Checkstyle
+        run: mvn -B checkstyle:check
