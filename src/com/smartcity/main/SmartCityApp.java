@@ -1,5 +1,6 @@
 package com.smartcity.main;
 
+import java.security.MessageDigest;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.sql.Connection;
@@ -23,7 +24,6 @@ import com.smartcity.db.DBConnection;
 public class SmartCityApp {
     // Scanner object shared across methods
     private static Scanner scanner = new Scanner(System.in);
-
     // SQL Query Constants
     private static final String CHECK_USERNAME_EXISTS_QUERY = "SELECT id FROM users WHERE username = ?";
     private static final String INSERT_USER_QUERY = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
@@ -36,8 +36,18 @@ public class SmartCityApp {
     private static final String UPDATE_PLACE_QUERY = "UPDATE places SET name = ?, category = ?, location = ?, description = ? WHERE id = ?";
     private static final String DELETE_PLACE_QUERY = "DELETE FROM places WHERE id = ?";
 
+    // SQL query and hash-format constants used by the plaintext-password migration
+    private static final String SELECT_ALL_CREDENTIALS_QUERY = "SELECT id, password FROM users";
+
+    private static final String UPDATE_PASSWORD_QUERY = "UPDATE users SET password = ? WHERE id = ?";
+
+    // A SHA-256 hash is always exactly 64 lowercase hex characters; anything else is a legacy plaintext password
+    private static final String SHA256_HEX_PATTERN = "^[a-f0-9]{64}$";
+
     public static void main(String[] args) {
         System.out.println("Smart City Guide Started Successfully");
+
+        migrateExistingPlaintextPasswords();
 
         boolean isRunning = true;
 
@@ -96,6 +106,58 @@ public class SmartCityApp {
         }
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return password.matches(regex);
+    }
+
+
+    private static final String checkQuery = "SELECT id FROM users WHERE username = ?";
+    private static final String insertQuery = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes("UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to hash password", e);
+        }
+    }
+
+    // One-time startup migration: rehashes any legacy plaintext passwords (e.g. the seeded admin account) to SHA-256
+    private static void migrateExistingPlaintextPasswords() {
+        Connection connection = DBConnection.getConnection();
+
+        if (connection == null) {
+            System.out.println("❌ Skipped password migration: failed to connect to database.");
+            return;
+        }
+
+        try (connection;
+             PreparedStatement selectPstmt = connection.prepareStatement(SELECT_ALL_CREDENTIALS_QUERY);
+             PreparedStatement updatePstmt = connection.prepareStatement(UPDATE_PASSWORD_QUERY);
+             ResultSet resultSet = selectPstmt.executeQuery()) {
+
+            int migratedCount = 0;
+
+            while (resultSet.next()) {
+                String storedPassword = resultSet.getString("password");
+
+                if (!storedPassword.matches(SHA256_HEX_PATTERN)) {
+                    updatePstmt.setString(1, hashPassword(storedPassword));
+                    updatePstmt.setInt(2, resultSet.getInt("id"));
+                    updatePstmt.executeUpdate();
+                    migratedCount++;
+                }
+            }
+
+            if (migratedCount > 0) {
+                System.out.println("Migrated " + migratedCount + " plaintext password(s) to SHA-256.");
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Error: Failed to migrate plaintext passwords.");
+            System.out.println("   Error message: " + e.getMessage());
+        }
     }
 
     // Register new user directly to MySQL database with validation
